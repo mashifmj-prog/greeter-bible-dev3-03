@@ -1108,12 +1108,28 @@ function previewImage() {
     
     generateVerseImage(selectedTheme);
     document.getElementById("imagePreview").classList.remove("hidden");
+    document.getElementById("imageOptions").classList.add("hidden");
     
-    // Scroll to preview
-    document.getElementById("imagePreview").scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'nearest' 
-    });
+    // Update event listeners for preview buttons
+    const backBtn = document.getElementById("backToThemesBtn");
+    const downloadBtn = document.getElementById("downloadPreviewBtn");
+    const shareBtn = document.getElementById("sharePreviewBtn");
+    
+    if (backBtn) {
+      backBtn.onclick = () => {
+        document.getElementById("imagePreview").classList.add("hidden");
+        document.getElementById("imageOptions").classList.remove("hidden");
+      };
+    }
+    
+    if (downloadBtn) {
+      downloadBtn.onclick = downloadImage;
+    }
+    
+    if (shareBtn) {
+      shareBtn.onclick = shareImage;
+    }
+    
   } catch (e) {
     console.error("Error previewing image:", e);
   }
@@ -1132,10 +1148,11 @@ function downloadImage() {
     link.href = dataUrl;
     link.click();
     
-    closeShareModal();
     showSuccessMessage("Image downloaded! 🖼️");
+    // Don't close modal - let user continue sharing
   } catch (e) {
     console.error("Error downloading image:", e);
+    showSuccessMessage("Error downloading image");
   }
 }
 
@@ -1147,31 +1164,57 @@ function shareImage() {
     const dataUrl = generateVerseImage(selectedTheme);
     if (!dataUrl) return;
     
+    // Check if attribution should be included
+    const includeAttribution = document.getElementById("includeAttribution")?.checked ?? true;
+    
     // Convert data URL to blob
     fetch(dataUrl)
       .then(res => res.blob())
       .then(blob => {
         const file = new File([blob], "bible-verse.png", { type: "image/png" });
         
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          navigator.share({
-            files: [file],
-            title: "Bible Verse",
-            text: currentVerse
-          }).then(() => {
-            closeShareModal();
-            showSuccessMessage("Shared successfully! 📤");
-          }).catch(err => {
-            console.error("Error sharing:", err);
-            downloadImage(); // Fallback to download
-          });
+        // Prepare share data
+        const shareData = {
+          files: [file],
+          title: "Bible Verse Inspiration",
+        };
+        
+        // Add text only if attribution is included
+        if (includeAttribution) {
+          shareData.text = `${currentVerse}\n\nShared via Greeter Bible App`;
         } else {
-          downloadImage(); // Fallback to download
+          shareData.text = currentVerse;
         }
+        
+        // Use native sharing if available
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          navigator.share(shareData)
+            .then(() => {
+              showSuccessMessage("Image shared successfully! 📤");
+              closeShareModal();
+            })
+            .catch(err => {
+              console.error("Error sharing image:", err);
+              // Fallback to download
+              downloadImage();
+              showSuccessMessage("Image downloaded instead! 🖼️");
+            });
+        } else {
+          // Fallback to download
+          downloadImage();
+          showSuccessMessage("Image downloaded! 🖼️");
+        }
+      })
+      .catch(err => {
+        console.error("Error processing image:", err);
+        downloadImage(); // Fallback to download
+        showSuccessMessage("Image downloaded! 🖼️");
       });
+      
   } catch (e) {
     console.error("Error sharing image:", e);
     downloadImage(); // Fallback to download
+    showSuccessMessage("Image downloaded! 🖼️");
   }
 }
 
@@ -1326,10 +1369,10 @@ document.getElementById('closeModalBtn')?.addEventListener('click', closeShareMo
       });
     });
 
-    // Image action buttons
-    document.getElementById('previewImageBtn')?.addEventListener('click', previewImage);
-    document.getElementById('downloadImageBtn')?.addEventListener('click', downloadImage);
-    document.getElementById('shareImageFinalBtn')?.addEventListener('click', shareImage);
+// Image action buttons
+document.getElementById('previewImageBtn')?.addEventListener('click', previewImage);
+document.getElementById('downloadImageBtn')?.addEventListener('click', downloadImage);
+document.getElementById('shareImageFinalBtn')?.addEventListener('click', shareImage);
 
     // Close modal when clicking outside
     const modals = document.querySelectorAll(".modal");
