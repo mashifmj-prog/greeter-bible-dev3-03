@@ -211,17 +211,24 @@
         </label>
       </div>
       
-      <div class="action-buttons">
-        <button id="previewImageBtn" class="action-btn secondary">Preview</button>
-        <button id="downloadImageBtn" class="action-btn primary">Download Image</button>
-      </div>
+<div class="action-buttons">
+  <button id="previewImageBtn" class="action-btn secondary">Preview</button>
+  <button id="downloadImageBtn" class="action-btn secondary">Download Image</button>
+  <button id="shareImageFinalBtn" class="action-btn primary">Share Image</button>
+</div>
       
-      <!-- Image Preview -->
-      <div id="imagePreview" class="image-preview hidden">
-        <h3>Preview</h3>
-        <canvas id="verseCanvas" width="600" height="400"></canvas>
-        <button id="shareImageFinalBtn" class="action-btn primary">Share Image</button>
-      </div>
+<!-- Image Preview -->
+<div id="imagePreview" class="image-preview hidden">
+  <h3>Image Preview</h3>
+  <div class="preview-container" style="text-align: center; margin: 15px 0;">
+    <canvas id="verseCanvas" width="600" height="400" style="max-width: 100%; height: auto; border: 2px solid var(--border-color); border-radius: 8px;"></canvas>
+  </div>
+  <div class="preview-actions" style="display: flex; gap: 10px; justify-content: center;">
+    <button id="backToThemesBtn" class="action-btn secondary">Back to Themes</button>
+    <button id="downloadPreviewBtn" class="action-btn secondary">Download</button>
+    <button id="sharePreviewBtn" class="action-btn primary">Share Image</button>
+  </div>
+</div>
     </div>
   </div>
 </div>
