@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 
-:root {
+:root[data-theme="light"] {
   /* Colors */
   --primary: #667eea;
   --primary-dark: #5a6fd8;
@@ -15,7 +15,17 @@
   --warning: #FF9800;
   --error: #f44336;
   
-  /* Neutrals */
+  /* Neutrals - Light Mode */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-muted: #666666;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  
+  /* Legacy support */
   --white: #ffffff;
   --gray-50: #f8f9fa;
   --gray-100: #e9ecef;
@@ -23,6 +33,37 @@
   --gray-500: #6c757d;
   --gray-800: #343a40;
   --gray-900: #212529;
+}
+
+:root[data-theme="dark"] {
+  /* Colors */
+  --primary: #8a9bff;
+  --primary-dark: #7a8bef;
+  --secondary: #9575cd;
+  --accent: #ff9ff3;
+  --success: #66bb6a;
+  --warning: #ffb74d;
+  --error: #ef5350;
+  
+  /* Neutrals - Dark Mode */
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-muted: #b0b0b0;
+  --border-color: #333333;
+  --card-bg: #1e1e1e;
+  --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  
+  /* Legacy support */
+  --white: #1e1e1e;
+  --gray-50: #2d2d2d;
+  --gray-100: #3d3d3d;
+  --gray-200: #4d4d4d;
+  --gray-500: #8d8d8d;
+  --gray-800: #d0d0d0;
+  --gray-900: #ffffff;
+}
   
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -57,9 +98,11 @@
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
-  color: var(--gray-900);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-background {
@@ -72,24 +115,53 @@ body {
   transition: all 2s ease-in-out;
 }
 
-body.morning .app-background {
+[data-theme="light"] .app-background {
+  /* Light mode gradients */
+}
+
+[data-theme="light"].morning .app-background {
   background: var(--gradient-morning);
 }
 
-body.day .app-background {
+[data-theme="light"].day .app-background {
   background: var(--gradient-day);
 }
 
-body.afternoon .app-background {
+[data-theme="light"].afternoon .app-background {
   background: var(--gradient-afternoon);
 }
 
-body.evening .app-background {
+[data-theme="light"].evening .app-background {
   background: var(--gradient-evening);
 }
 
-body.night .app-background {
+[data-theme="light"].night .app-background {
   background: var(--gradient-night);
+}
+
+[data-theme="dark"] .app-background {
+  /* Dark mode gradients - more subdued */
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+[data-theme="dark"].morning .app-background {
+  background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+}
+
+[data-theme="dark"].day .app-background {
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+}
+
+[data-theme="dark"].afternoon .app-background {
+  background: linear-gradient(135deg, #2c3e50 0%, #9b59b6 100%);
+}
+
+[data-theme="dark"].evening .app-background {
+  background: linear-gradient(135deg, #2c3e50 0%, #e74c3c 100%);
+}
+
+[data-theme="dark"].night .app-background {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
 }
 
 /* ===== LAYOUT ===== */
@@ -269,20 +341,21 @@ body.night .app-background {
 }
 
 .verse-container {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: var(--space-2xl);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--card-shadow);
   transition: all 0.5s ease;
+  color: var(--text-primary);
 }
 
 .verse-main-text {
   font-size: 1.4rem;
   line-height: 1.6;
-  color: var(--white);
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+  color: var(--text-primary);
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.1);
   font-family: 'Playfair Display', serif;
   margin-bottom: var(--space-lg);
 }
