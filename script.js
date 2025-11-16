@@ -323,6 +323,7 @@ function shareFavorite(index) {
 }
 
 // -------------------- Dark/Light Mode --------------------
+// -------------------- Dark/Light Mode --------------------
 let currentTheme = 'light'; // 'light' or 'dark'
 
 function initializeTheme() {
@@ -346,15 +347,18 @@ function initializeTheme() {
 function applyTheme(theme) {
   try {
     currentTheme = theme;
-    document.body.setAttribute('data-theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem("bibleAppTheme", theme);
     
     // Update theme toggle button if it exists
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) {
-      themeBtn.innerHTML = theme === 'dark' ? '🌙' : '☀️';
+      themeBtn.innerHTML = theme === 'dark' ? '☀️' : '🌙';
       themeBtn.title = theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
     }
+    
+    // Update body class for time-based backgrounds
+    updateTimeBasedBackground();
   } catch (e) {
     console.error("Error applying theme:", e);
   }
@@ -364,6 +368,23 @@ function toggleTheme() {
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   applyTheme(newTheme);
   showSuccessMessage(newTheme === 'dark' ? 'Dark mode activated' : 'Light mode activated');
+}
+
+// Update body class for time-based backgrounds while respecting theme
+function updateTimeBasedBackground() {
+  const hour = new Date().getHours();
+  let timeClass = '';
+  
+  if (hour >= 5 && hour < 12) timeClass = 'morning';
+  else if (hour >= 12 && hour < 15) timeClass = 'day';
+  else if (hour >= 15 && hour < 18) timeClass = 'afternoon';
+  else if (hour >= 18 && hour < 22) timeClass = 'evening';
+  else timeClass = 'night';
+  
+  // Remove all time classes
+  document.body.classList.remove('morning', 'day', 'afternoon', 'evening', 'night');
+  // Add current time class
+  document.body.classList.add(timeClass);
 }
 
 // -------------------- Updated Greeting (Time-based only, no colors) --------------------
@@ -408,6 +429,9 @@ function updateGreeting() {
     updateVerseDisplay();
     updateFavoriteButton();
     addToReadingHistory(currentVerseObj);
+    
+    // UPDATE TIME-BASED BACKGROUND FOR THEME SYSTEM
+    updateTimeBasedBackground();
     
   } catch (e) {
     console.error("Error updating greeting:", e);
